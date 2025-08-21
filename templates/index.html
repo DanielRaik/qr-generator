@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de QR Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-red-400 to-zinc-900 min-h-screen py-8">
+  <div class="container mx-auto px-4">
+    <div class="bg-black shadow-2xl rounded-2xl p-8 max-w-lg mx-auto">
+      <h1 class="text-3xl font-bold text-center mb-8 text-red-400">Gerador de QR Code</h1>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="mb-4 p-4 rounded-lg {% if category == 'error' %}bg-red-100 border border-red-300 text-red-700 {% else %} bg-green-100 border border-green-300 text-green-700{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="/" class="space-y-6">
+        <div>
+          <label class="block text-sm font-semibold text-white mb-2">🔗 URL:</label>
+          <input type="text" name="url" required placeholder="Digite a URL (ex: google.com)"
+            class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+          <p class="text-xs text-white mt-1">Você pode digitar com ou sem http://</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-white mb-2">🎨 Cor do QR Code:</label>
+          <input type="color" name="color" value="#000000"
+            class="w-full h-12 rounded-lg border border-gray-300 cursor-pointer">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-white mb-2">🎨 Cor de Fundo:</label>
+          <input type="color" name="bg_color" value="#ffffff"
+            class="w-full h-12 rounded-lg border border-gray-300 cursor-pointer">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-white mb-2">📏 Tamanho:</label>
+          <select name="size" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="5">Pequeno (5x5)</option>
+            <option value="10" selected>Médio (10x10)</option>
+            <option value="15">Grande (15x15)</option>
+            <option value="20">Extra Grande (20x20)</option>
+          </select>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+          Gerar QR Code
+        </button>
+      </form>
+
+      {% if qr_url %}
+      <div class="mt-8 text-center">
+        <h2 class="text-xl font-bold mb-4 text-white">Seu QR Code está pronto!</h2>
+        <div class="bg-gray-50 p-6 rounded-xl">
+          <img src="{{ qr_url }}" alt="QR Code gerado" class="mx-auto border-2 border-gray-200 rounded-lg shadow-md max-w-full">
+        </div>
+        <div class="flex gap-3 justify-center mt-6">
+          <a href="{{ qr_url }}" download="meu_qrcode.png"
+            class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+            Baixar QR Code
+          </a>
+          <button onclick="copyImageUrl()"
+            class="bg-gradient-to-tr from-red-400 to-red-700 hover:from-red-700 hover:to-red-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-400 transform hover:scale-105 shadow-lg">
+            Copiar Link
+          </button>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function copyImageUrl() {
+      const imageUrl = window.location.origin + "{{ qr_url or '' }}";
+      navigator.clipboard.writeText(imageUrl).then(function() {
+        alert('Link copiado para a área de transferência!');
+      }).catch(function(err) {
+        console.error('Erro ao copiar: ', err);
+      });
+    }
+  </script>
+</body>
+</html>
