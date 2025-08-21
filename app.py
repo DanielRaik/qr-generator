@@ -9,9 +9,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'sua_chave_secreta_aqui_mudeme')
 
 def is_valid_url(url):
-    """Valida se a URL é válida"""
     try:
-        # Adiciona http:// se não tiver protocolo
+        # adiciona http:// se não tiver protocolo
         if not url.startswith(('http://', 'https://')):
             url = 'http://' + url
         
@@ -21,7 +20,6 @@ def is_valid_url(url):
         return False
 
 def normalize_url(url):
-    """Normaliza a URL adicionando protocolo se necessário"""
     if not url.startswith(('http://', 'https://')):
         url = 'http://' + url
     return url
@@ -42,23 +40,22 @@ def index():
             flash("URL inválida. Verifique o formato da URL.", "error")
         else:
             try:
-                # Normaliza a URL
+                # normaliza a URL
                 normalized_url = normalize_url(url)
                 
-                # Gera nome único para o arquivo
+                # gera um nome de arquivo único
                 filename = f"qr_{uuid.uuid4().hex[:8]}.png"
                 qr_path = os.path.join("static", filename)
                 
-                # Limpa QR codes antigos (opcional - limite para evitar muito uso de espaço)
                 static_files = [f for f in os.listdir("static") if f.startswith("qr_") and f.endswith(".png")]
-                if len(static_files) > 10:  # Mantém apenas os 10 mais recentes
+                if len(static_files) > 10:  
                     for old_file in static_files[:-10]:
                         try:
                             os.remove(os.path.join("static", old_file))
                         except:
                             pass
 
-                # Gera o QR code
+                # gerar qr code
                 qr = qrcode.QRCode(
                     version=1,
                     error_correction=qrcode.constants.ERROR_CORRECT_H,
@@ -80,10 +77,10 @@ def index():
     return render_template("index.html", qr_url=qr_url)
 
 if __name__ == "__main__":
-    # Cria pasta static se não existir
+    # cria pasta static se não existir
     if not os.path.exists("static"):
         os.makedirs("static")
     
-    # Para desenvolvimento local
+    # desv local
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
