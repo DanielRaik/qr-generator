@@ -6,7 +6,7 @@ import re
 from urllib.parse import urlparse
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'sua_chave_secreta_aqui_mudeme')
+app.secret_key = os.environ.get('SECRET_KEY', 's3cUr3!k3y#9f$@1L0ng&Rand0m*Str1ng')
 
 if not os.path.exists("static"):
     os.makedirs("static")
