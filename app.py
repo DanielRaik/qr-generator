@@ -56,7 +56,7 @@ def index():
                 qr_path = os.path.join(static_dir, filename)
                 
                 static_files = [f for f in os.listdir("static") if f.startswith("qr_") and f.endswith(".png")]
-                if len(static_files) > 10:  # Mantém apenas os 10 mais recentes
+                if len(static_files) > 10: 
                     for old_file in static_files[:-10]:
                         try:
                             os.remove(os.path.join("static", old_file))
